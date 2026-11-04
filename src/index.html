@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Reserva tu lugar en los talleres de Aula Abierta.">
+  <title>Aula Abierta · Talleres</title>
+  <link rel="stylesheet" href="estilos.css">
+  <script src="reserva.js" defer></script>
+</head>
+<body>
+  <a class="saltar" href="#contenido">Saltar al contenido</a>
+  <header class="cabecera">
+    <div class="marca"><span class="simbolo" aria-hidden="true">A</span> AULA ABIERTA</div>
+    <p>Aprende, practica y comparte.</p>
+  </header>
+  <main id="contenido" tabindex="-1">
+    <div class="introduccion">
+      <p class="etiqueta">TALLERES · FORMACIÓN PRÁCTICA</p>
+      <h1>Elige tu taller</h1>
+      <p>Un espacio para aprender haciendo. Consulta los detalles y reserva tu lugar.</p>
+    </div>
+    <div class="distribucion">
+      <section aria-labelledby="titulo-talleres">
+        <h2 id="titulo-talleres" class="titulo-seccion">Taller disponible</h2>
+        <article class="tarjeta taller" aria-labelledby="nombre-taller">
+          <p class="etiqueta">DISEÑO Y TECNOLOGÍA</p>
+          <h3 id="nombre-taller">Interfaces web accesibles</h3>
+          <p>Practica cómo organizar una interfaz adaptable y facilitar su uso con teclado.</p>
+          <dl class="detalles">
+            <div><dt>Día</dt><dd>Jueves</dd></div>
+            <div><dt>Horario</dt><dd>14:00 a 16:00</dd></div>
+            <div><dt>Lugar</dt><dd>Laboratorio 2</dd></div>
+          </dl>
+          <button id="reservar" type="button" aria-controls="estado-reserva">Reservar un lugar</button>
+          <p class="ayuda">Una reserva activa por persona. Puedes cancelarla cuando lo necesites.</p>
+        </article>
+      </section>
+      <section aria-labelledby="titulo-reserva">
+        <h2 id="titulo-reserva" class="titulo-seccion">Mi reserva</h2>
+        <div class="tarjeta resumen">
+          <span id="insignia" class="insignia" data-estado="disponible">Disponible</span>
+          <h3>Tu próximo aprendizaje</h3>
+          <p id="estado-reserva" role="status" aria-live="polite" aria-atomic="true">Aún no tienes una reserva. Elige el taller para confirmar tu lugar.</p>
+          <button id="cancelar" class="secundario" type="button" aria-controls="estado-reserva" disabled>Cancelar reserva</button>
+          <p class="ayuda">La confirmación aparecerá aquí.</p>
+        </div>
+      </section>
+    </div>
+    <noscript><p class="aviso">Activa JavaScript para confirmar o cancelar tu reserva.</p></noscript>
+  </main>
+  <footer><p>Aula Abierta · Aprendizaje para todos</p><p>Prototipo académico · APE 5 / Fase 1</p></footer>
+</body>
+</html>
