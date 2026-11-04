@@ -1,0 +1,69 @@
+{
+  "anchos": [
+    {
+      "ancho": 360,
+      "anchoDocumento": 345,
+      "columnas": "313px",
+      "apiladas": true,
+      "mismaFila": false
+    },
+    {
+      "ancho": 768,
+      "anchoDocumento": 753,
+      "columnas": "426.453px 266.547px",
+      "apiladas": false,
+      "mismaFila": true
+    },
+    {
+      "ancho": 1366,
+      "anchoDocumento": 1351,
+      "columnas": "672px 420px",
+      "apiladas": false,
+      "mismaFila": true
+    }
+  ],
+  "interaccion": [
+    {
+      "estado": "Disponible",
+      "reservarDeshabilitado": false,
+      "cancelarDeshabilitado": true,
+      "foco": "",
+      "mensaje": "Aún no tienes una reserva. Elige el taller para confirmar tu lugar."
+    },
+    {
+      "estado": "Confirmada",
+      "reservarDeshabilitado": true,
+      "cancelarDeshabilitado": false,
+      "foco": "cancelar",
+      "mensaje": "Reserva confirmada para Interfaces web accesibles. Jueves, de 14:00 a 16:00, en Laboratorio 2."
+    },
+    {
+      "estado": "Cancelada",
+      "reservarDeshabilitado": false,
+      "cancelarDeshabilitado": true,
+      "foco": "reservar",
+      "mensaje": "Reserva cancelada. Ya no tienes una reserva activa. Puedes volver a reservar un lugar."
+    },
+    {
+      "estado": "Confirmada",
+      "reservarDeshabilitado": true,
+      "cancelarDeshabilitado": false,
+      "foco": "cancelar",
+      "mensaje": "Reserva confirmada para Interfaces web accesibles. Jueves, de 14:00 a 16:00, en Laboratorio 2."
+    },
+    {
+      "estado": "Cancelada",
+      "reservarDeshabilitado": false,
+      "cancelarDeshabilitado": true,
+      "foco": "reservar",
+      "mensaje": "Reserva cancelada. Ya no tienes una reserva activa. Puedes volver a reservar un lugar."
+    }
+  ],
+  "diagnostico": {
+    "viewport": 360,
+    "anchoDocumento": 960,
+    "panelIzquierda": 600
+  },
+  "lectorPantalla": "Pendiente de verificación humana",
+  "resultado": "Todas las comprobaciones automatizadas pasaron"
+}
