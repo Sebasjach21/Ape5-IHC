@@ -1,0 +1,72 @@
+name: Abrir PR de aporte
+
+on:
+  push:
+    branches:
+      - aporte/julio-jacho
+      - aporte/oscar-riofrio
+      - aporte/cristian-ango
+      - aporte/matias-morales
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: read
+  pull-requests: write
+
+concurrency:
+  group: abrir-pr-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  abrir:
+    if: startsWith(github.ref, 'refs/heads/aporte/')
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      RAMA: ${{ github.ref_name }}
+    steps:
+      - name: Abrir PR y enlazar el issue del responsable
+        shell: python
+        run: |
+          import json
+          import os
+          import subprocess
+          from pathlib import Path
+
+          def gh(*args):
+              return subprocess.check_output(['gh', *args], text=True).strip()
+
+          tareas = {
+              'aporte/julio-jacho': ('Julio Jacho', 'Diagnóstico y ficha del proyecto'),
+              'aporte/oscar-riofrio': ('Oscar Riofrio', 'Estructura HTML5 semántica'),
+              'aporte/cristian-ango': ('Cristian Ango', 'Diseño CSS Mobile-First'),
+              'aporte/matias-morales': ('Matias Morales', 'Interacción y verificación'),
+          }
+          rama = os.environ['RAMA']
+          nombre, tarea = tareas[rama]
+          repo = os.environ['GH_REPO']
+          comparacion = json.loads(gh('api', f'repos/{repo}/compare/main...{rama}'))
+          if not comparacion.get('files'):
+              print('La rama no tiene cambios frente a main; no requiere PR.')
+              raise SystemExit(0)
+          titulo = f'APE5: {nombre} — {tarea}'
+          issues = json.loads(gh('issue', 'list', '--state', 'open', '--limit', '1000', '--json', 'title,number'))
+          issue = next((i['number'] for i in issues if i['title'] == titulo), None)
+          cuerpo = f'Responsable: {nombre}\n\n{tarea} para la Fase 1 de APE 5. Revisar los archivos modificados y sus criterios de aceptación.\n\n'
+          cuerpo += f'Closes #{issue}\n\n' if issue else 'Issue pendiente de creación o de enlace manual.\n\n'
+          cuerpo += 'Pendiente de revisión por el equipo. No se fusiona automáticamente. Las pruebas específicas deben documentarse en el PR.'
+          archivo = Path(os.environ['RUNNER_TEMP']) / 'cuerpo-pr.md'
+          archivo.write_text(cuerpo, encoding='utf-8')
+          abiertos = json.loads(gh('pr', 'list', '--base', 'main', '--head', rama, '--state', 'open', '--json', 'number,url'))
+          if abiertos:
+              print('El PR existente recibe los nuevos commits:', abiertos[0]['url'])
+              # Enlazar el issue si se creó después del PR, conservando el texto del autor.
+              if issue:
+                  actual = gh('pr', 'view', str(abiertos[0]['number']), '--json', 'body', '--jq', '.body')
+                  if f'Closes #{issue}' not in actual:
+                      archivo.write_text(actual + f'\n\nCloses #{issue}\n', encoding='utf-8')
+                      gh('pr', 'edit', str(abiertos[0]['number']), '--body-file', str(archivo))
+          else:
+              print(gh('pr', 'create', '--base', 'main', '--head', rama, '--title', titulo, '--body-file', str(archivo)))

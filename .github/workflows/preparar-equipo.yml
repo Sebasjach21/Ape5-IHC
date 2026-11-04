@@ -1,0 +1,62 @@
+name: Preparar equipo
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: preparar-equipo
+  cancel-in-progress: false
+
+jobs:
+  configurar:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+    steps:
+      - name: Crear los cuatro issues y las ramas que falten
+        shell: python
+        run: |
+          import json
+          import os
+          import subprocess
+
+          def gh(*args):
+              return subprocess.check_output(['gh', *args], text=True).strip()
+
+          repo = os.environ['GH_REPO']
+          tareas = [
+              ('Julio Jacho', 'aporte/julio-jacho', 'Diagnóstico y ficha del proyecto',
+               'Agregar docs/proyecto.md con el diagnóstico a 360 px, Actor → Tarea → Dato decisivo → Acción principal → Estado final, regla de negocio, criterio medible, decisión HCI e hipótesis para la Fase 2.'),
+              ('Oscar Riofrio', 'aporte/oscar-riofrio', 'Estructura HTML5 semántica',
+               'Agregar src/index.html con header, main, section, article y dl; botones nativos y una región p con role="status". Conservar el orden de lectura entre móvil y escritorio.'),
+              ('Cristian Ango', 'aporte/cristian-ango', 'Diseño CSS Mobile-First',
+               'Agregar src/estilos.css con una columna base y dos desde @media (min-width: 48rem). Verificar ausencia de desborde a 360, 768 y 1366 px e indicador de foco visible.'),
+              ('Matias Morales', 'aporte/matias-morales', 'Interacción y verificación',
+               'Agregar src/reserva.js y docs/pruebas.md. Implementar Disponible → Confirmada → Cancelada, bloqueo de acción duplicada con disabled y foco automático en el botón disponible. Verificar Tab, Enter y Espacio.'),
+          ]
+          existentes = json.loads(gh('issue', 'list', '--state', 'all', '--limit', '1000', '--json', 'title,number'))
+          titulos = {issue['title'] for issue in existentes}
+          base = gh('api', f'repos/{repo}/git/ref/heads/main', '--jq', '.object.sha')
+          for nombre, rama, tarea, criterio in tareas:
+              titulo = f'APE5: {nombre} — {tarea}'
+              if titulo not in titulos:
+                  cuerpo = f'Responsable: {nombre}\n\nRama: `{rama}`\n\n{criterio}\n\nEntregar mediante un pull request hacia `main`. No usar carpetas con nombres de integrantes.'
+                  print(gh('issue', 'create', '--title', titulo, '--body', cuerpo))
+                  titulos.add(titulo)
+              else:
+                  print(f'Issue existente: {nombre}')
+              consulta = subprocess.run(['gh', 'api', f'repos/{repo}/git/ref/heads/{rama}'], capture_output=True, text=True)
+              if consulta.returncode == 0:
+                  print(f'Rama existente: {rama}')
+              elif '404' in consulta.stderr:
+                  print(gh('api', '--method', 'POST', f'repos/{repo}/git/refs', '-f', f'ref=refs/heads/{rama}', '-f', f'sha={base}'))
+              else:
+                  raise RuntimeError(consulta.stderr)
