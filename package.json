@@ -1,0 +1,11 @@
+{
+  "name": "aula-abierta-ape5",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "test": "node verificar.mjs"
+  },
+  "devDependencies": {
+    "playwright": "1.65.0"
+  }
+}
