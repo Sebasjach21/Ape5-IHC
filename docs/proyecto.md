@@ -1,54 +1,47 @@
-# Ficha de aplicación · Aula Abierta
+# APE 5 · Ficha de aplicación de Aula Abierta
 
-APE 5 — Fase 1. Pantalla basada en `prototipo-A.html`.
+Grupo 3, FISEI, carrera de Software, Universidad Técnica de Ambato. Pantalla estudiada: consulta de un taller y gestión de una reserva. Repositorio: https://github.com/Sebasjach21/Ape5-IHC.
 
-## Equipo y distribución
+| Integrante | Responsabilidad en esta entrega |
+| --- | --- |
+| Oscar Riofrio, coordinador (@AdrianMora8) | Planificación y defensa del trabajo |
+| Julio Jacho, propietario del repositorio (@Sebasjach21) | Boceto A y estructura HTML |
+| Cristian Ango (@CristianDDGA) | Estilos adaptativos e interacción |
+| Matias Morales (@MatiusJBG) | Pruebas, capturas y resultados |
 
-| Integrante | Parte | Archivos de su aporte |
-| --- | --- | --- |
-| Julio Jacho | 1. Diagnóstico y ficha del proyecto | docs/proyecto.md |
-| Oscar Riofrio | 2. Estructura HTML5 semántica | src/index.html |
-| Cristian Ango | 3. Diseño CSS Mobile-First | src/estilos.css |
-| Matias Morales | 4. Interacción y verificación | src/reserva.js, docs/pruebas.md |
+## Diagnóstico del boceto A
 
-## Diagnóstico del Boceto A a 360 px
+El archivo `prototipo-A.html` representa la versión de escritorio con un cuerpo fijo de 960 px. Sus columnas miden 580 px y 360 px, separadas por 20 px. En una ventana de 360 px, el documento conserva 960 px de ancho: hay 600 px de exceso horizontal. El panel «Mi reserva» empieza en la coordenada horizontal 600 px, fuera de la primera pantalla. El estudiante no ve inmediatamente si tiene una reserva. El botón del boceto está deshabilitado y no permite terminar la tarea. La captura `capturas/boceto-original-360.png` muestra ese problema.
 
-El boceto fija el cuerpo en 960 px y usa columnas de 580 px y 360 px con un espacio de 20 px. El contenido requiere 960 px frente a un viewport de 360 px: hay al menos 600 px de exceso horizontal. Además, el relleno y los bordes de los paneles pueden aumentar el espacio mínimo requerido. El panel «Mi reserva», ubicado en la segunda columna, queda fuera de la vista inicial y requiere desplazamiento horizontal. Se pierde la visibilidad inmediata del estado «Aún no tienes una reserva» y de cualquier confirmación futura. El botón original está deshabilitado y no existe interacción.
+## Ficha de aplicación
 
-## Secuencia de aplicación
+| Elemento | Definición para Aula Abierta |
+| --- | --- |
+| Actor | Estudiante que desea participar en un taller práctico |
+| Tarea principal | Consultar el taller y reservar un lugar |
+| Dato clave para decidir | Nombre del taller, día, horario y lugar |
+| Acción principal | Activar «Reservar un lugar» |
+| Resultado visible | Insignia «Confirmada» y mensaje con los datos de la reserva en «Mi reserva» |
+| Corrección o cancelación | Activar «Cancelar reserva»; aparece «Cancelada» y se puede reservar de nuevo |
 
-**Actor → Tarea → Dato decisivo → Acción principal → Estado final**
+Secuencia principal: estudiante → consulta datos → reserva → ve confirmación. Secuencia reversible: estudiante con reserva → cancela → ve cancelación → puede volver a reservar.
 
-Estudiante que busca formación práctica → Reservar un taller → Nombre, día, horario y lugar → Pulsar «Reservar un lugar» → Reserva confirmada y visible en «Mi reserva».
+## Regla de interacción
 
-Secuencia alternativa: estudiante con reserva confirmada → Cancelar su participación → Confirmación de la reserva actual → Pulsar «Cancelar reserva» → Reserva cancelada y posibilidad de volver a reservar.
+Solo puede haber una reserva activa durante la sesión de la página. Al confirmar, `src/interaccion.js` cambia el estado a `confirmada`, deshabilita el botón de reserva, habilita cancelar y mueve el foco a ese control. Una segunda activación de reservar no crea otra reserva. Al cancelar, el estado pasa a `cancelada`, se invierten los botones y el foco vuelve a reservar. Recargar reinicia el estado a `disponible`; el prototipo no usa cuentas, servidor ni almacenamiento.
 
-## Requisito y regla de negocio
+## Criterios de aceptación
 
-El estudiante debe consultar los datos del taller y gestionar una reserva desde móvil o escritorio usando ratón o teclado. Solo puede existir **una reserva activa** del taller durante la sesión de la página. Confirmar deshabilita «Reservar un lugar» y habilita «Cancelar reserva». Cancelar invierte la disponibilidad. Este prototipo no tiene servidor, cuentas ni persistencia: recargar vuelve al estado Disponible.
+1. A 320, 360, 768 y 1366 px, `document.documentElement.scrollWidth <= innerWidth`.
+2. A 320 y 360 px, los paneles ocupan una columna; desde 768 px se presentan en dos columnas. El taller precede a «Mi reserva» en el HTML y en el recorrido con Tab.
+3. Los botones tienen al menos 44 px de alto y muestran un indicador de foco al usar teclado.
+4. En «Disponible», reservar está habilitado y cancelar deshabilitado.
+5. Enter sobre reservar muestra «Confirmada», bloquea reservar, habilita cancelar y deja el foco en cancelar.
+6. Espacio sobre cancelar muestra «Cancelada», habilita reservar, bloquea cancelar y devuelve el foco a reservar.
+7. Dos ciclos completos funcionan sin reservas duplicadas. El mensaje cambia dentro de `p[role="status"]`.
 
-## Criterios de aceptación medibles
+## Decisiones HCI y límite de la evidencia
 
-1. A 360, 768 y 1366 px, el ancho desplazable del documento no supera su ancho visible.
-2. A 360 px hay una columna; desde 768 px hay dos. El taller precede a la reserva en el HTML y en el orden de lectura.
-3. En Disponible, reservar está habilitado y cancelar está deshabilitado.
-4. Tras una activación con Enter o Espacio, el estado pasa a Confirmada, reservar queda deshabilitado, cancelar habilitado y el foco llega a cancelar.
-5. Tras cancelar con teclado, el estado pasa a Cancelada, reservar queda habilitado, cancelar deshabilitado y el foco vuelve a reservar.
-6. Repetir confirmación sin cancelar no produce una segunda reserva. Después de cancelar se puede reservar otra vez.
-7. Los cambios actualizan una región `role="status"`; el foco de los controles tiene un indicador visible.
+La información del taller precede a la acción, por lo que el estudiante puede decidir con los datos visibles. La versión móvil apila los paneles sin cambiar el orden de lectura. Las etiquetas textuales comunican el estado sin depender del color. Los botones nativos admiten Tab, Enter y Espacio; el foco visible y su traslado explícito mantienen la continuidad de la tarea. La región de estado permite anunciar el resultado con tecnologías de apoyo.
 
-## Decisión HCI justificada
-
-Se coloca primero la información necesaria para decidir y luego el estado de la tarea. En móvil los paneles se apilan sin ocultar información; en escritorio se muestran en paralelo desde 48rem. El texto explícito Disponible/Confirmada/Cancelada evita depender del color. Los botones nativos conservan la interacción habitual con teclado. Al deshabilitar el botón usado se mueve el foco al botón disponible para continuar la tarea sin perder la ubicación. La región de estado permite anunciar la actualización sin cambiar el foco al mensaje.
-
-## Hipótesis para la Fase 2
-
-**Hipótesis propuesta, pendiente de revisión real entre pares:** a 360 px, el panel de reserva queda debajo del taller y algunos participantes podrían tardar en identificar la confirmación. El traslado del foco a cancelar podría ayudar a localizarla.
-
-Validación propuesta: pedir a cinco compañeros que reserven y cancelen con teclado a 360 px. Registrar tiempo para identificar la confirmación, errores y desplazamientos. Criterio inicial: al menos cuatro de cinco identifican el estado correcto en menos de cinco segundos tras cada acción, sin ayuda. Registrar los resultados reales en la Fase 2; no se afirma que esta revisión ya se realizó.
-
-## Evidencia y entrega
-
-Al integrar los aportes del equipo, se incorporarán las capturas preliminares en `capturas/`: móvil a 360 px y escritorio a 1366 px. El informe breve se agregará en `docs/` y la comprobación adicional a 768 px se registrará en `docs/pruebas.md`. Esos archivos quedan pendientes y no forman parte de este aporte de documentación.
-
-Repositorio del grupo: https://github.com/Sebasjach21/Ape5-IHC. En «Texto en línea» se utilizará este enlace una vez publicados los commits del equipo.
+La prueba automatizada comprueba distribución, desborde, estados, duplicados y foco. La comprensión de la confirmación, el anuncio efectivo de un lector de pantalla y la facilidad de uso requieren observación humana. No se atribuyen resultados a participantes sin haber realizado esa prueba.
