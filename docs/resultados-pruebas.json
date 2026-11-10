@@ -1,22 +1,29 @@
 {
   "anchos": [
     {
+      "ancho": 320,
+      "anchoDocumento": 320,
+      "columnas": "288px",
+      "apiladas": true,
+      "mismaFila": false
+    },
+    {
       "ancho": 360,
-      "anchoDocumento": 345,
-      "columnas": "313px",
+      "anchoDocumento": 360,
+      "columnas": "328px",
       "apiladas": true,
       "mismaFila": false
     },
     {
       "ancho": 768,
-      "anchoDocumento": 753,
-      "columnas": "426.453px 266.547px",
+      "anchoDocumento": 768,
+      "columnas": "435.688px 272.312px",
       "apiladas": false,
       "mismaFila": true
     },
     {
       "ancho": 1366,
-      "anchoDocumento": 1351,
+      "anchoDocumento": 1366,
       "columnas": "672px 420px",
       "apiladas": false,
       "mismaFila": true
@@ -65,5 +72,6 @@
     "panelIzquierda": 600
   },
   "lectorPantalla": "Pendiente de verificación humana",
+  "participantes": "Pendiente de prueba con personas reales",
   "resultado": "Todas las comprobaciones automatizadas pasaron"
 }
